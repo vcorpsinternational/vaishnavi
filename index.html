@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The World of Vaishnavi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Tangerine:wght@700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color-start: #1a2a6c;
+            --bg-color-mid: #b21f1f;
+            --bg-color-end: #fdbb2d;
+            --text-color: #fde2e2;
+            --primary-accent: #ff8fab;
+            --secondary-accent: #f5b461;
+            --gold-accent: #ffd700;
+        }
+
+        body {
+            color: var(--text-color);
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            background: linear-gradient(315deg, var(--bg-color-start), var(--bg-color-mid), var(--bg-color-end));
+            background-size: 400% 400%;
+            animation: gradient-flow 16s ease infinite;
+            cursor: none; /* Hide the default cursor */
+        }
+
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* UPDATED: Smoother, more performant cursor trail */
+        .sparkle-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10001;
+            background: radial-gradient(circle, #fff 0%, var(--gold-accent) 50%, transparent 70%);
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+        .sparkle-trail.animate {
+            animation: sparkle-fade-out 1s forwards;
+        }
+
+        @keyframes sparkle-fade-out {
+            0% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -80px) scale(0);
+                opacity: 0;
+            }
+        }
+        
+        #cursor-glow {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, rgba(255,215,0,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+        }
+
+        /* Preloader */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #1a2a6c;
+            z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        #preloader.loaded { opacity: 0; visibility: hidden; }
+        .lotus-loader { width: 100px; height: 100px; animation: bloom 2s ease-in-out infinite; }
+        @keyframes bloom {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+            50% { transform: scale(1.1) rotate(10deg); opacity: 1; }
+        }
+
+        /* Custom Fonts */
+        .font-tangerine { font-family: 'Tangerine', cursive; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+
+        /* UPDATED: Butterfly with smoother CSS animations */
+        .butterfly-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; }
+        .butterfly { position: absolute; width: 60px; height: 60px; will-change: transform, opacity; animation: fly-path-1 25s linear infinite; }
+        .butterfly.b2 { animation-name: fly-path-2; animation-duration: 30s; }
+        .butterfly.b3 { animation-name: fly-path-3; animation-duration: 20s; }
+        .butterfly svg { width: 100%; height: 100%; animation: flutter 0.4s ease-in-out infinite alternate; filter: drop-shadow(0 0 5px var(--gold-accent));}
+        
+        @keyframes flutter { from { transform: scaleX(1); } to { transform: scaleX(0.2); } }
+        @keyframes fly-path-1 {
+            0% { transform: translate(100vw, 10vh) rotate(0deg); opacity: 1; }
+            50% { transform: translate(20vw, 80vh) rotate(30deg); opacity: 1; }
+            100% { transform: translate(-10vw, 20vh) rotate(0deg); opacity: 1; }
+        }
+        @keyframes fly-path-2 {
+            0% { transform: translate(-10vw, 90vh) rotate(0deg); opacity: 1; }
+            50% { transform: translate(80vw, 20vh) rotate(-20deg); opacity: 1; }
+            100% { transform: translate(110vw, 70vh) rotate(10deg); opacity: 1; }
+        }
+        @keyframes fly-path-3 {
+            0% { transform: translate(50vw, -10vh) rotate(0deg); opacity: 1; }
+            50% { transform: translate(10vw, 50vh) rotate(10deg); opacity: 1; }
+            100% { transform: translate(90vw, 110vh) rotate(-10deg); opacity: 1; }
+        }
+
+        /* Hero Section */
+        .hero { min-height: 100vh; display: flex; justify-content: center; align-items: center; text-align: center; position: relative; overflow: hidden; }
+        .hero-text { animation: fadeIn 2s 1s ease-out forwards; opacity: 0; }
+        @keyframes fadeIn { to { opacity: 1; } }
+        .hero h1 {
+            color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px var(--primary-accent), 0 0 30px var(--primary-accent);
+        }
+        .growing-vine { position: absolute; fill: none; stroke: var(--gold-accent); stroke-width: 1; stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: draw-in 4s 0.5s ease-out forwards; opacity: 0.7; }
+        @keyframes draw-in { to { stroke-dashoffset: 0; } }
+
+        /* Scroll Reveal Animations */
+        .reveal-up { opacity: 0; transform: translateY(100px); transition: opacity 1.2s cubic-bezier(0.19, 1, 0.22, 1), transform 1.2s cubic-bezier(0.19, 1, 0.22, 1); will-change: opacity, transform; }
+        .reveal-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* Card Styles */
+        .card {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px) saturate(1.8);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+            transform-style: preserve-3d;
+            border-radius: 1rem;
+            will-change: transform;
+        }
+        .card:hover {
+            transform: translateY(-20px) perspective(1500px) rotateX(7deg) rotateY(-5deg) scale(1.05);
+            box-shadow: 0 50px 60px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 215, 0, 0.6);
+        }
+        .card-border-gradient {
+            padding: 2px;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, rgba(255,143,171,0.5), rgba(245,180,97,0.5));
+        }
+
+        /* 3D Tilt Effect Container */
+        .tilt-container { perspective: 1000px; }
+        .tilt-element { transition: transform 0.2s ease-out; transform-style: preserve-3d; will-change: transform; }
+        
+        /* Section Divider */
+        .section-divider { text-align: center; margin: 6rem 0; }
+        .section-divider svg { width: 250px; height: 60px; stroke: var(--gold-accent); opacity: 0.6; filter: drop-shadow(0 0 3px var(--gold-accent));}
+
+    </style>
+</head>
+<body class="antialiased">
+    
+    <div id="preloader">
+        <svg class="lotus-loader" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path fill="var(--primary-accent)" d="M50,85 A35,35 0 0,1 15,50 A10,10 0 0,1 50,50 A35,35 0 0,1 85,50 A10,10 0 0,1 50,85 Z"/>
+            <path fill="var(--gold-accent)" d="M50,15 A35,35 0 0,1 85,50 A10,10 0 0,1 50,50 A35,35 0 0,1 15,50 A10,10 0 0,1 50,15 Z"/>
+        </svg>
+    </div>
+
+    <!-- Animated Butterflies -->
+    <div id="butterfly-container" class="butterfly-container"></div>
+    
+    <!-- Cursor Glow Element -->
+    <div id="cursor-glow"></div>
+
+    <!-- Main Content -->
+    <main class="relative z-10">
+        <!-- Hero Section -->
+        <section class="hero">
+            <svg class="growing-vine" style="top:5%; left:5%; width:90%; height:90%;" viewBox="0 0 500 500">
+                <path d="M 50 20 Q 250 -20 450 20 Q 520 250 450 480 Q 250 520 50 480 Q -20 250 50 20 Z"/>
+            </svg>
+            <div class="hero-text px-4">
+                <h2 class="font-tangerine text-6xl md:text-8xl text-primary-accent" style="text-shadow: 1px 1px 10px rgba(0,0,0,0.2);">Enter the world of</h2>
+                <h1 class="font-playfair text-7xl md:text-9xl font-bold mt-2">Vaishnavi</h1>
+                <p class="mt-8 text-lg max-w-2xl mx-auto text-gray-300">A soul that speaks in poetry and paints in dreams.</p>
+            </div>
+        </section>
+
+        <div class="container mx-auto px-6 lg:px-8">
+            <!-- About Me Section -->
+            <section id="about" class="py-24 flex flex-col lg:flex-row items-center gap-16 lg:gap-24 reveal-up">
+                <div class="w-full lg:w-2/5 tilt-container">
+                    <img src="https://placehold.co/600x800/2a3a7c/fde2e2?text=Vaishnavi" alt="A portrait of Vaishnavi" class="tilt-element rounded-lg shadow-2xl w-full h-auto object-cover border-4 border-white/20">
+                </div>
+                <div class="w-full lg:w-3/5">
+                    <h2 class="font-playfair text-5xl font-bold mb-6" style="text-shadow: 0 0 15px var(--primary-accent);">My Canvas and I</h2>
+                    <p class="text-xl mb-4 leading-relaxed">
+                        Hello, I'm Vaishnavi. To me, the world isn't just a place to live, but a grand poem waiting to be read, a painting waiting for its color. I find my voice in the quiet spaces between words and my solace in the flow of ink on paper.
+                    </p>
+                    <p class="text-lg leading-relaxed text-gray-300">
+                        This little digital sanctuary is a reflection of my inner world—a garden where butterflies of thought take flight, where flowers of emotion bloom in verse, and where the leaves carry whispers of stories. I invite you to wander through, and perhaps find a piece of your own story reflected here.
+                    </p>
+                </div>
+            </section>
+            
+            <div class="section-divider reveal-up">
+                <svg viewBox="0 0 200 20"><path d="M0,10 C20,20 40,0 60,10 C80,20 100,0 120,10 C140,20 160,0 180,10 C200,20 220,0 240,10" fill="none" stroke-width="1.5"/></svg>
+            </div>
+
+            <!-- My Poems Section -->
+            <section id="poems" class="py-24 text-center">
+                <h2 class="font-playfair text-5xl font-bold mb-16 reveal-up" style="text-shadow: 0 0 15px var(--primary-accent);">Whispers of the Heart</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="card-border-gradient reveal-up" style="transition-delay: 100ms;"><div class="card p-8 h-full"><h3 class="font-playfair text-2xl font-bold mb-4 text-primary-accent">The Silk-Winged Wanderer</h3><p class="font-serif text-md leading-loose text-gray-300">A flash of sun on wings of silk,<br>It dances on the morning's milk.<br>From rose to lily, soft it flies,<br>A fleeting jewel in summer skies.</p></div></div>
+                    <div class="card-border-gradient reveal-up" style="transition-delay: 200ms;"><div class="card p-8 h-full"><h3 class="font-playfair text-2xl font-bold mb-4 text-primary-accent">Ink-Stained Petals</h3><p class="font-serif text-md leading-loose text-gray-300">Each word a seed, on paper sown,<br>A garden of my own.<br>Feelings bloom in black and white,<br>Bathed in the moon's soft, silver light.</p></div></div>
+                    <div class="card-border-gradient reveal-up" style="transition-delay: 300ms;"><div class="card p-8 h-full"><h3 class="font-playfair text-2xl font-bold mb-4 text-primary-accent">Green Veins</h3><p class="font-serif text-md leading-loose text-gray-300">A leaf, a map of life's design,<br>Each vein a path, a fragile line.<br>It holds the sun, it drinks the rain,<br>And whispers tales of gentle pain.</p></div></div>
+                </div>
+            </section>
+            
+            <div class="section-divider reveal-up">
+                 <svg viewBox="0 0 200 20"><path d="M0,10 C20,20 40,0 60,10 C80,20 100,0 120,10 C140,20 160,0 180,10 C200,20 220,0 240,10" fill="none" stroke-width="1.5"/></svg>
+            </div>
+
+            <!-- My Gallery Section -->
+            <section id="gallery" class="py-24 text-center">
+                <h2 class="font-playfair text-5xl font-bold mb-16 reveal-up" style="text-shadow: 0 0 15px var(--primary-accent);">A Splash of Color</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                    <div class="tilt-container reveal-up" style="transition-delay: 100ms;"><img src="https://placehold.co/500x700/c58c85/fde2e2?text=Art+1" alt="Drawing 1" class="tilt-element w-full h-full object-cover rounded-lg shadow-lg"></div>
+                    <div class="tilt-container reveal-up md:mt-16" style="transition-delay: 200ms;"><img src="https://placehold.co/500x700/88a0a8/fde2e2?text=Art+2" alt="Drawing 2" class="tilt-element w-full h-full object-cover rounded-lg shadow-lg"></div>
+                    <div class="tilt-container reveal-up" style="transition-delay: 300ms;"><img src="https://placehold.co/500x700/f5b461/1a2a6c?text=Art+3" alt="Drawing 3" class="tilt-element w-full h-full object-cover rounded-lg shadow-lg"></div>
+                    <div class="tilt-container reveal-up md:mt-16" style="transition-delay: 400ms;"><img src="https://placehold.co/500x700/6a7b8d/fde2e2?text=Art+4" alt="Drawing 4" class="tilt-element w-full h-full object-cover rounded-lg shadow-lg"></div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="text-center py-24">
+                 <p class="font-tangerine text-5xl text-primary-accent reveal-up">Thank you for visiting</p>
+                 <p class="mt-4 text-lg text-gray-300 reveal-up" style="transition-delay: 100ms;">May your path be lined with beauty.</p>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('load', () => {
+            document.getElementById('preloader').classList.add('loaded');
+        });
+
+        // --- UPDATED: PERFORMANCE-OPTIMIZED ANIMATION SCRIPT ---
+
+        // Shared state for mouse position
+        const mouse = { x: 0, y: 0 };
+        // Shared state for the element currently being tilted
+        let currentTiltElement = null;
+
+        // --- 1. Efficient Cursor Trail using a pool of elements ---
+        const cursorGlow = document.getElementById('cursor-glow');
+        const sparklePool = [];
+        const maxSparkles = 30;
+        let sparkleIndex = 0;
+
+        // Create the pool on startup
+        for (let i = 0; i < maxSparkles; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle-trail';
+            document.body.appendChild(sparkle);
+            sparklePool.push(sparkle);
+        }
+
+        function spawnSparkle() {
+            const sparkle = sparklePool[sparkleIndex];
+            sparkleIndex = (sparkleIndex + 1) % maxSparkles;
+            
+            sparkle.style.left = `${mouse.x}px`;
+            sparkle.style.top = `${mouse.y}px`;
+            
+            // Restart animation by removing and re-adding the class
+            sparkle.classList.remove('animate');
+            void sparkle.offsetWidth; // Trigger reflow
+            sparkle.classList.add('animate');
+        }
+
+        // --- 2. 3D Tilt Effect Logic ---
+        function applyTilt() {
+            if (!currentTiltElement) return;
+
+            const el = currentTiltElement;
+            const container = el.parentElement;
+            const rect = container.getBoundingClientRect();
+            const x = mouse.x - rect.left;
+            const y = mouse.y - rect.top;
+            const { width, height } = rect;
+            const rotateX = ((y / height) - 0.5) * -20;
+            const rotateY = ((x / width) - 0.5) * 20;
+            
+            el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        }
+
+        // --- 3. Central Animation Loop using requestAnimationFrame ---
+        let lastSparkleTime = 0;
+        function animationLoop(currentTime) {
+            // Move the main cursor glow
+            cursorGlow.style.transform = `translate(${mouse.x}px, ${mouse.y}px) translate(-50%, -50%)`;
+            
+            // Spawn sparkles at a controlled rate (e.g., every 50ms)
+            if (currentTime - lastSparkleTime > 50) {
+                spawnSparkle();
+                lastSparkleTime = currentTime;
+            }
+
+            // Apply tilt effect
+            applyTilt();
+            
+            // Continue the loop
+            requestAnimationFrame(animationLoop);
+        }
+
+        // --- 4. Event Listeners to update state ---
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        const tiltContainers = document.querySelectorAll('.tilt-container');
+        tiltContainers.forEach(container => {
+            container.addEventListener('mouseenter', () => {
+                currentTiltElement = container.querySelector('.tilt-element');
+            });
+            container.addEventListener('mouseleave', () => {
+                if (currentTiltElement) {
+                    currentTiltElement.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                }
+                currentTiltElement = null;
+            });
+        });
+
+        // Start the animation loop
+        requestAnimationFrame(animationLoop);
+
+
+        // --- Scroll Reveal ---
+        const revealElements = document.querySelectorAll('.reveal-up');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // --- Butterfly Creation ---
+        const butterflyContainer = document.getElementById('butterfly-container');
+        const butterflyCount = 3;
+        const butterflyColors = ['#ff8fab', '#ffd700', '#87ceeb', '#98ff98'];
+        
+        for (let i = 0; i < butterflyCount; i++) {
+            const butterfly = document.createElement('div');
+            butterfly.className = `butterfly b${i + 1}`;
+            const color1 = butterflyColors[Math.floor(Math.random() * butterflyColors.length)];
+            const color2 = butterflyColors[Math.floor(Math.random() * butterflyColors.length)];
+            butterfly.innerHTML = `
+                <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30,30 C0,60 0,0 30,30" fill="${color1}"/>
+                    <path d="M30,30 C60,60 60,0 30,30" fill="${color2}"/>
+                </svg>`;
+            butterfly.style.transform = `scale(${0.5 + Math.random() * 0.8})`;
+            butterfly.style.animationDelay = `${Math.random() * 10}s`;
+            butterflyContainer.appendChild(butterfly);
+        }
+    </script>
+</body>
+</html>
